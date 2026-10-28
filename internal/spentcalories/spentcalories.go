@@ -21,18 +21,21 @@ func parseTraining(data string) (int, string, time.Duration, error) {
 	// TODO: реализовать функцию
 	splt := strings.Split(data, ",")
 	if len(splt) != 3 {
-		return 0, " ", 0, fmt.Errorf("Количество запятых не равно 2\n")
+		return 0, "", 0, fmt.Errorf("Количество запятых не равно 2\n")
 	}
 	stps, err := strconv.Atoi(splt[0])
 	if err != nil {
-		return 0, " ", 0, fmt.Errorf("Произошла ошибка преобразования: %v\n", err)
+		return 0, "", 0, fmt.Errorf("Произошла ошибка преобразования: %v\n", err)
 	}
 	if stps < 1 {
-		return 0, " ", 0, fmt.Errorf("Кол-во шагов должно быть положительным\n")
+		return 0, "", 0, fmt.Errorf("Кол-во шагов должно быть положительным\n")
 	}
 	drtn, err := time.ParseDuration(splt[2])
 	if err != nil {
-		return 0, " ", 0, fmt.Errorf("Произошла ошибка преобразования: %v\n", err)
+		return 0, "", 0, fmt.Errorf("Произошла ошибка преобразования: %v\n", err)
+	}
+	if drtn <= 0 {
+		return 0, "", 0, fmt.Errorf("Длительность должна быть больше нуля\n")
 	}
 	return stps, splt[1], drtn, nil
 }
@@ -76,9 +79,9 @@ func TrainingInfo(data string, weight, height float64) (string, error) {
 			return "Ошибка при расчете калорий при ходьбе]", err
 		}
 		duration := duration.Hours()
-		return fmt.Sprintf("Тип тренировки: %s\nДлительность: %.2f ч.\nДистанция: %2.f км.\nСкорость: %.2f км/ч\nСожгли калорий: %.2f\n", training, duration, distance, speed, cals), nil
+		return fmt.Sprintf("Тип тренировки: %s\nДлительность: %.2f ч.\nДистанция: %.2f км.\nСкорость: %.2f км/ч\nСожгли калорий: %.2f\n", training, duration, distance, speed, cals), nil
 	default:
-		return "неизвестный тип тренировки", nil
+		return "", fmt.Errorf("неизвестный тип тренировки")
 	}
 }
 

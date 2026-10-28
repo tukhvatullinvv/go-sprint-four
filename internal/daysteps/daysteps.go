@@ -33,6 +33,9 @@ func parsePackage(data string) (int, time.Duration, error) {
 	if err != nil {
 		return 0, 0, fmt.Errorf("Произошла ошибка преобразования: %v\n", err)
 	}
+	if drtn <= 0 {
+		return 0, 0, fmt.Errorf("Продолжительность должна быть больше нуля\n")
+	}
 	return stps, drtn, nil
 }
 
@@ -41,7 +44,7 @@ func DayActionInfo(data string, weight, height float64) string {
 	stps, drtn, err := parsePackage(data)
 	if err != nil {
 		fmt.Println(err)
-		return " "
+		return ""
 	}
 	if stps < 1 {
 		return ""
@@ -50,7 +53,7 @@ func DayActionInfo(data string, weight, height float64) string {
 	ccals, err := spentcalories.WalkingSpentCalories(stps, weight, height, drtn)
 	if err != nil {
 		fmt.Println(err)
-		return " "
+		return ""
 	}
 	return fmt.Sprintf("Количество шагов: %d.\nДистанция составила %.2f км.\nВы сожгли %.2f ккал.\n", stps, dstns, ccals)
 }
